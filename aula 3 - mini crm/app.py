@@ -1,0 +1,54 @@
+from model import model_lead
+import control
+
+def add_lead():
+    name = input("Nome: ")
+    email = input("Email: ")
+    company = input("Company: ")
+    stage = input("Estafio de vendas: ")
+
+    if not name or not email or "@" not in email:
+        print("Nome e\ou email válido são obrigatórios")
+        return # volta para o Menu inicial
+
+    print( name, email, company, stage )
+
+    # precisar de model para modelar os dados
+    print(model_lead(name, email, company, stage))
+
+    # depois de modelado...
+    # chamar control.py para enviar os dados modelados para o banco de dados json
+    control.created_lead(model_lead(name,company, email, stage))
+
+def list_lead():
+    leads = control.read_leads()
+
+    if not leads:
+        print("nenhum lead ainda")
+        return
+
+    print("\n# | NOME           | COMPANY                   | EMAIL ")
+    for i, lead in enumerate(leads):
+        print(f"{i: 02d} | {lead['nome']: <20} | {lead['company']<17} | {lead['email']<20}")
+
+
+def  main():
+    while True:
+        print("\nMini CRM - 1° aula - (adicionar / listar usuarios")
+        print("[1] - adicionar lead")
+        print("[2] - listar lead")
+        print("[0] -sair do programa")
+
+        opt = input("Escolha uma ação: ").strip() # tirar o espaço
+        if opt == "1":
+            add_lead()
+        elif opt == "2":
+            list_lead()
+        elif opt == "0":
+            print("Saindo do programa")
+            break
+        else:
+            print("Opção inválida")
+
+if __name__ == "__main__":
+    main()
